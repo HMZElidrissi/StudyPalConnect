@@ -1,13 +1,21 @@
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.db.models import Q
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from Core.models import Room, Topic
 from Core.forms import RoomForm
 
 
 def login_page(request):
+    page = 'login'
+
+    if request.user.is_authenticated:
+        return redirect('home')
+
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -25,7 +33,7 @@ def login_page(request):
         else:
             messages.error(request, "wrong password")
 
-    return render(request, 'Core/login_register.html', {})
+    return render(request, 'Core/login_register.html', {'page': page})
 
 
 def logout_user(request):
@@ -53,6 +61,7 @@ def room(request, pk):
     return render(request, 'Core/room.html', context)
 
 
+@login_required(login_url='/login')
 def create_room(request):
     form = RoomForm()
     if request.method == 'POST':
@@ -64,8 +73,13 @@ def create_room(request):
     return render(request, 'Core/room_form.html', context)
 
 
+@login_required(login_url='/login')
 def update_room(request, pk):
     selected_room = Room.objects.get(id=pk)
+
+    if request.user != selected_room.host:
+        return HttpResponse('You are not allowed here')
+
     form = RoomForm(instance=selected_room)
     if request.method == 'POST':
         form = RoomForm(request.POST, instance=selected_room)
@@ -76,8 +90,13 @@ def update_room(request, pk):
     return render(request, 'Core/room_form.html', context)
 
 
+@login_required(login_url='/login')
 def delete_room(request, pk):
     room_to_delete = Room.objects.get(id=pk)
+
+    if request.user != room_to_delete.host:
+        return HttpResponse('You are not allowed here')
+
     if request.method == 'POST':
         room_to_delete.delete()
         return redirect('home')
