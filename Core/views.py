@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
-from Core.models import Room, Topic
+from Core.models import Room, Topic, Message
 from Core.forms import RoomForm
 
 
@@ -73,7 +73,26 @@ def home(request):
 
 def room(request, pk):
     selected_room = Room.objects.get(id=pk)
-    context = {'selected_room': selected_room}
+    # Many-to-One Relationship: object_set.all()
+    # Many-to-Many Relationship: object.all()
+    room_messages = selected_room.message_set.all().order_by('-created')
+    participants = selected_room.participants.all()
+
+    if request.method == 'POST':
+        message = Message.objects.create(
+            user=request.user,
+            room=selected_room,
+            body=request.POST.get('body')
+        )
+        selected_room.participants.add(request.user)
+        return redirect('room', pk=selected_room.id)
+
+    context = {
+        'selected_room': selected_room,
+        'room_messages': room_messages,
+        'participants': participants
+    }
+
     return render(request, 'Core/room.html', context)
 
 
@@ -117,3 +136,16 @@ def delete_room(request, pk):
         room_to_delete.delete()
         return redirect('home')
     return render(request, 'Core/confirm_delete.html', {'obj': room_to_delete})
+
+
+@login_required(login_url='/login')
+def delete_message(request, pk):
+    message_to_delete = Message.objects.get(id=pk)
+
+    if request.user != message_to_delete.user:
+        return HttpResponse('You are not allowed here')
+
+    if request.method == 'POST':
+        message_to_delete.delete()
+        return redirect('home')
+    return render(request, 'Core/confirm_delete.html', {'obj': message_to_delete})
