@@ -1,6 +1,6 @@
 from django.forms import ModelForm, TextInput, Textarea
-from Core.models import Room
-from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
+from Core.models import Room, User
 
 
 class RoomForm(ModelForm):
@@ -17,4 +17,10 @@ class RoomForm(ModelForm):
 class UserForm(ModelForm):
     class Meta:
         model = User
-        fields = ['email', 'username']
+        fields = ['avatar', 'full_name', 'email', 'username', 'bio']
+
+
+class NewUserForm(UserCreationForm):
+    class Meta:
+        model = User
+        fields = ['full_name', 'email', 'username', 'password1', 'password2']

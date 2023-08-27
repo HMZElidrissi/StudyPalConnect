@@ -2,12 +2,10 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
-from Core.models import Room, Topic, Message
-from Core.forms import RoomForm, UserForm
+from Core.models import User, Room, Topic, Message
+from Core.forms import RoomForm, UserForm, NewUserForm
 
 
 def login_page(request):
@@ -42,10 +40,10 @@ def logout_user(request):
 
 
 def register_page(request):
-    form = UserCreationForm()
+    form = NewUserForm()
 
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = NewUserForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
             user.username = user.username.lower()
@@ -193,7 +191,7 @@ def update_user(request):
     user = request.user
     form = UserForm(instance=user)
     if request.method == 'POST':
-        form = UserForm(request.POST, instance=user)
+        form = UserForm(request.POST, request.FILES, instance=user)
         if form.is_valid():
             form.save()
             return redirect('profile', pk=user.id)
