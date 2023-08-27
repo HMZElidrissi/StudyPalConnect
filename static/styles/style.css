@@ -1,12 +1,12 @@
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap");
 
 :root {
-  --color-main: #71c6dd;
+  --color-main: #558599;
   --color-main-light: #e1f6fb;
-  --color-dark: #3f4156;
-  --color-dark-medium: #51546e;
-  --color-dark-light: #696d97;
-  --color-light: #e5e5e5;
+  --color-dark: #212226;
+  --color-dark-medium: #32373D;
+  --color-dark-light: #495073;
+  --color-light: #E9E9F2;
   --color-gray: #8b8b8b;
   --color-light-gray: #b2bdbd;
   --color-bg: #2d2d39;
@@ -96,11 +96,11 @@ a {
 
 .btn--main {
   background-color: var(--color-main);
-  color: var(--color-dark);
+  color: var(--color-light);
 }
 
 .btn:hover {
-  opacity: 0.9;
+  opacity: 0.8;
 }
 
 .btn--dark {
@@ -283,14 +283,8 @@ a {
 }
 
 .header__logo > img {
-  height: 3.2rem;
-  width: 3.2rem;
-}
-
-.header__logo > h1 {
-  font-weight: 700;
-  font-size: 2rem;
-  color: var(--color-light);
+  height: 5rem;
+  width: 20rem;
 }
 
 .header__search > label {
@@ -303,7 +297,7 @@ a {
 }
 
 .header__search svg {
-  fill: var(--color-gray);
+  fill: var(--color-light);
   width: 2rem;
   height: 2rem;
   margin-left: 1rem;
@@ -371,7 +365,7 @@ a {
 .header__menu svg {
   width: 1.6rem;
   height: 1.6rem;
-  fill: var(--color-dark-light);
+  fill: var(--color-light);
 }
 
 .dropdown-button {
@@ -456,7 +450,7 @@ a {
 .layout__boxTitle svg {
   width: 1.6rem;
   height: 1.6rem;
-  fill: var(--color-main);
+  fill: var(--color-light);
 }
 
 .layout__body {
@@ -563,7 +557,7 @@ a {
 .topics__header h2 {
   text-transform: uppercase;
   font-weight: 500;
-  color: var(--color-dark-light);
+  color: var(--color-light-gray);
 }
 
 .topics__list {
@@ -635,7 +629,7 @@ a {
 
 .roomList__header p {
   font-weight: 500;
-  color: var(--color-dark-light);
+  color: var(--color-gray);
 }
 
 /*========== Room List Room ==========*/
@@ -882,7 +876,7 @@ a {
 
 .profile__about h3 {
   text-transform: uppercase;
-  color: var(--color-dark-light);
+  color: var(--color-light-gray);
   margin-bottom: 0.5rem;
 }
 
@@ -891,7 +885,7 @@ a {
 }
 
 .profile-page .roomList__header h2 {
-  color: var(--color-dark-light);
+  color: var(--color-light-gray);
 }
 
 /*==============================
@@ -965,7 +959,6 @@ a {
 
 .room__header {
   max-height: 30vh;
-  overflow-y: auto;
   position: absolute;
   width: 95%;
   background: var(--color-dark);
@@ -1008,7 +1001,7 @@ a {
 .room__info h3 {
   font-size: 2.4rem;
   font-weight: 500;
-  color: var(--color-main);
+  color: var(--color-light);
 }
 
 .room__hosted p {
@@ -1128,7 +1121,7 @@ a {
 }
 
 .participants__top span {
-  color: var(--color-main);
+  color: var(--color-light-gray);
   font-size: 1.3rem;
   text-transform: none;
 }
