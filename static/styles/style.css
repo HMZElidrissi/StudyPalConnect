@@ -731,7 +731,7 @@ a {
 }
 
 .activities__header h2 {
-  background-color: var(--color-dark-light);
+  background-color: var(--color-dark-medium);
   text-transform: uppercase;
   font-weight: 500;
   padding: 1rem 1.5rem;
