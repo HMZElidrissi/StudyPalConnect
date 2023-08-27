@@ -66,7 +66,7 @@ def home(request):
         Q(name__icontains=q)
     )
     rooms_count = rooms.count()
-    topics = Topic.objects.all()
+    topics = Topic.objects.all()[0:5]
     room_messages = Message.objects.filter(Q(room__topic__name__icontains=q))
     context = {
         'rooms': rooms,
@@ -198,3 +198,14 @@ def update_user(request):
             form.save()
             return redirect('profile', pk=user.id)
     return render(request, 'Core/update_user.html', {'form': form})
+
+
+def topics_page(request):
+    q = request.GET.get('q') if request.GET.get('q') is not None else ''
+    topics = Topic.objects.filter(name__icontains=q)
+    return render(request, 'Core/topics.html', {'topics': topics})
+
+
+def activities_page(request):
+    room_messages = Message.objects.all()
+    return render(request, 'Core/activities.html', {'room_messages': room_messages})
