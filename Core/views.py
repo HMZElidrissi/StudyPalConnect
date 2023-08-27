@@ -7,7 +7,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from Core.models import Room, Topic, Message
-from Core.forms import RoomForm
+from Core.forms import RoomForm, UserForm
 
 
 def login_page(request):
@@ -121,12 +121,21 @@ def create_room(request):
     form = RoomForm()
     topics = Topic.objects.all()
     if request.method == 'POST':
-        form = RoomForm(request.POST)
-        if form.is_valid():
-            new_room = form.save(commit=False)
-            new_room.host = request.user
-            new_room.save()
-            return redirect('home')
+        topic_name = request.POST.get('topic')
+        topic, created = Topic.objects.get_or_create(name=topic_name)
+
+        Room.objects.create(
+            host=request.user,
+            topic=topic,
+            name=request.POST.get('name'),
+            description=request.POST.get('description')
+        )
+        # form = RoomForm(request.POST)
+        # if form.is_valid():
+        #     new_room = form.save(commit=False)
+        #     new_room.host = request.user
+        #     new_room.save()
+        return redirect('home')
     context = {'form': form, 'topics': topics}
     return render(request, 'Core/room_form.html', context)
 
@@ -134,17 +143,22 @@ def create_room(request):
 @login_required(login_url='/login')
 def update_room(request, pk):
     selected_room = Room.objects.get(id=pk)
+    topics = Topic.objects.all()
 
     if request.user != selected_room.host:
         return HttpResponse('You are not allowed here')
 
     form = RoomForm(instance=selected_room)
     if request.method == 'POST':
-        form = RoomForm(request.POST, instance=selected_room)
-        if form.is_valid():
-            form.save()
-            return redirect('home')
-    context = {'form': form}
+        topic_name = request.POST.get('topic')
+        topic, created = Topic.objects.get_or_create(name=topic_name)
+        selected_room.topic = topic
+        selected_room.name = request.POST.get('name')
+        selected_room.description = request.POST.get('description')
+        selected_room.save()
+        return redirect('home')
+
+    context = {'form': form, 'topics': topics, 'selected_room': selected_room}
     return render(request, 'Core/room_form.html', context)
 
 
@@ -172,3 +186,15 @@ def delete_message(request, pk):
         message_to_delete.delete()
         return redirect('home')
     return render(request, 'Core/confirm_delete.html', {'obj': message_to_delete})
+
+
+@login_required(login_url='/login')
+def update_user(request):
+    user = request.user
+    form = UserForm(instance=user)
+    if request.method == 'POST':
+        form = UserForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect('profile', pk=user.id)
+    return render(request, 'Core/update_user.html', {'form': form})
